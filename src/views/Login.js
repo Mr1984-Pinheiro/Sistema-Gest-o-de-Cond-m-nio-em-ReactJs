@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 import {
+  CAlert,
   CButton,
   CCard,
   CCardBody,
@@ -25,16 +26,22 @@ const Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const makeLoginButton = async () => {
     if (email && password) {
+      setLoading(true);
       const result = await api.login(email, password);
+      setLoading(false);
       if (result.error === '') {
         localStorage.setItem('token', result.token);
         history.push('/');
+      } else {
+        setError(result.error);
       }
     } else {
-      alert("Digite os dados");
+      setError("Digite os dados");
     }
   }
 
@@ -50,6 +57,11 @@ const Login = () => {
                   <CForm>
                     <h1>Login</h1>
                     <p className="text-muted">Digite seus dados de acesso</p>
+
+                    {error !== '' &&
+                      <CAlert color='danger' >{error}</CAlert>
+                    }
+
                     <CInputGroup className="mb-3">
                       <CInputGroupPrepend>
                         <CInputGroupText>
@@ -57,7 +69,7 @@ const Login = () => {
                         </CInputGroupText>
                       </CInputGroupPrepend>
 
-                      <CInput type="text" placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)} />
+                      <CInput disabled={loading} type="text" placeholder="E-mail" value={email} onChange={e => setEmail(e.target.value)} />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupPrepend>
@@ -65,7 +77,7 @@ const Login = () => {
                           <CIcon name="cil-lock-locked" />
                         </CInputGroupText>
                       </CInputGroupPrepend>
-                      <CInput type="password" placeholder="Senha" value={password} onChange={e => setPassword(e.target.value)} />
+                      <CInput disabled={loading} type="password" placeholder="Senha" value={password} onChange={e => setPassword(e.target.value)} />
                     </CInputGroup>
                     <CRow>
                       <CCol xs="6">
@@ -73,8 +85,9 @@ const Login = () => {
                           color="primary"
                           className="px-4"
                           onClick={makeLoginButton}
+                          disabled={loading}
                         >
-                          Entrar
+                          {loading ? "Carregando" : "Entrar"}
                         </CButton>
                       </CCol>
 
