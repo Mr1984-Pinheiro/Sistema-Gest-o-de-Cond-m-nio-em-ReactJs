@@ -47,7 +47,7 @@ export default () => {
         },
         getWall: async () => {
             let token = localStorage.getItem('token');
-            let json = await request('get', '/walls', {}, token);
+            let json = await request('get', '/wall', {}, token);
             return json;
         }
     };
