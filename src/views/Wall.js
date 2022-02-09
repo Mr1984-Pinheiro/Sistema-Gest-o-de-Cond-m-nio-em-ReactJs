@@ -27,7 +27,7 @@ export default () => {
 
     const [loading, setLoding] = useState(true);
     const [list, setList] = useState([]);
-    const [showModal, setShowModal] = useState(true);
+    const [showModal, setShowModal] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
     const [modalTitleField, setModalTitleField] = useState('');
     const [modalBodyField, setModalBodyField] = useState('');
@@ -65,13 +65,40 @@ export default () => {
         setShowModal(true);
     }
 
+    const handleRemoveButton = async (index) => {
+        if (window.confirm('Tem certeza que deseja excluir?')) {
+            const result = await api.removeWall(list[index]['id']);
+            if (result.error === '') {
+                getList();
+            } else {
+                alert(result.error);
+            }
+        }
+    }
+
+    const handleNewButton = () => {
+        setModalId('');
+        setModalTitleField('');
+        setModalBodyField('');
+        setShowModal(true);
+    }
+
     const handleModalSave = async () => {
         if (modalTitleField && modalBodyField) {
             setModalLoading(true);
-            const result = await api.updateWall(modalId, {
+
+            let result;
+            let data = {
                 title: modalTitleField,
                 body: modalBodyField
-            });
+            };
+
+            if (modalId === '') {
+                result = await api.addWall(data);
+            } else {
+                result = await api.updateWall(modalId, data);
+            }
+
             setModalLoading(false);
             if (result.error === '') {
                 setShowModal(false);
@@ -93,7 +120,7 @@ export default () => {
 
                     <CCard>
                         <CCardHeader>
-                            <CButton color="primary" >
+                            <CButton color="primary" onClick={handleNewButton} >
                                 <CIcon name="cil-check" /> Novo Aviso
                             </CButton>
                         </CCardHeader>
@@ -107,16 +134,16 @@ export default () => {
                                 striped
                                 bordered
                                 pagination
-                                itemsPerPage={1}
+                                itemsPerPage={5}
                                 scopedSlots={{
                                     'actions': (item, index) => (
                                         <td>
-                                            <CButtonGroup color="info" onClick={() => handleEditButton(index)}>
-                                                Editar
+                                            <CButtonGroup >
+                                                <CButton color="info" onClick={() => handleEditButton(index)}>
+                                                    Editar</CButton>
+                                                <CButton color="danger" onClick={() => handleRemoveButton(index)}>Excluir</CButton>
                                             </CButtonGroup>
-                                            <CButtonGroup color="danger">
-                                                Excluir
-                                            </CButtonGroup>
+
                                         </td>
                                     )
                                 }}
@@ -128,7 +155,7 @@ export default () => {
 
             <CModal show={showModal} onClose={handleCloseModal}>
                 <CModalHeader closeButton>
-                    Editar Aviso
+                    {modalId === '' ? 'Novo' : 'Editar'} Aviso
                 </CModalHeader>
                 <CModalBody>
                     <CFormGroup>
