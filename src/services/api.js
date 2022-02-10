@@ -47,7 +47,7 @@ export default () => {
         },
         getWall: async () => {
             let token = localStorage.getItem('token');
-            let json = await request('get', '/wall', {}, token);
+            let json = await request('get', '/walls', {}, token);
             return json;
         },
         updateWall: async (id, data) => {
@@ -63,6 +63,11 @@ export default () => {
         removeWall: async (id) => {
             let token = localStorage.getItem('token');
             let json = await request('delete', `/wall/${id}`, {}, token);
+            return json;
+        },
+        getDocuments: async () => {
+            let token = localStorage.getItem('token');
+            let json = await request('get', '/docs', {}, token);
             return json;
         }
     };
