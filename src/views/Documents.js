@@ -30,7 +30,7 @@ export default () => {
     const [showModal, setShowModal] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
     const [modalTitleField, setModalTitleField] = useState('');
-    const [modalBodyField, setModalBodyField] = useState('');
+    const [modalFileField, setModalFileField] = useState('');
     const [modalId, setModalId] = useState('');
 
     const fields = [
@@ -60,7 +60,7 @@ export default () => {
     const handleEditButton = (index) => {
         setModalId(list[index]['id']);
         setModalTitleField(list[index]['title']);
-        setModalBodyField(list[index]['body']);
+        //setModalBodyField(list[index]['body']);
         setShowModal(true);
     }
 
@@ -78,24 +78,32 @@ export default () => {
     const handleNewButton = () => {
         setModalId('');
         setModalTitleField('');
-        setModalBodyField('');
+        setModalFileField('');
         setShowModal(true);
     }
 
     const handleModalSave = async () => {
-        if (modalTitleField && modalBodyField) {
+        if (modalTitleField) {
             setModalLoading(true);
 
             let result;
             let data = {
                 title: modalTitleField,
-                body: modalBodyField
+
             };
 
             if (modalId === '') {
-                result = await api.addWall(data);
+                if (modalFileField) {
+                    data.file = modalFileField;
+                    result = await api.addDocument(data);
+                } else {
+                    alert("Selecione o sarquivo");
+                    setModalLoading(false);
+                    return;
+                }
+
             } else {
-                result = await api.updateWall(modalId, data);
+                result = await api.updateDocument(modalId, data);
             }
 
             setModalLoading(false);
@@ -159,15 +167,15 @@ export default () => {
 
             <CModal show={showModal} onClose={handleCloseModal}>
                 <CModalHeader closeButton>
-                    {modalId === '' ? 'Novo' : 'Editar'} Aviso
+                    {modalId === '' ? 'Novo' : 'Editar'} Documento
                 </CModalHeader>
                 <CModalBody>
                     <CFormGroup>
-                        <CLabel htmlFor="modal-title">Título do aviso</CLabel>
+                        <CLabel htmlFor="modal-title">Título do documento</CLabel>
                         <CInput
                             type="text"
                             id="modal-title"
-                            placeholder="Digite um título para o aviso"
+                            placeholder="Digite um título para o documento"
                             value={modalTitleField}
                             onChange={e => setModalTitleField(e.target.value)}
                             disabled={modalLoading}
@@ -175,13 +183,13 @@ export default () => {
                     </CFormGroup>
 
                     <CFormGroup>
-                        <CLabel htmlFor="modal-body">Corpo do aviso</CLabel>
-                        <CTextarea
-                            id="modal-body"
-                            placeholder="Digite o conteúdo do aviso"
-                            value={modalBodyField}
-                            onChange={e => setModalBodyField(e.target.value)}
-                            disabled={modalLoading}
+                        <CLabel htmlFor="modal-file">Arquivo (pdf)</CLabel>
+                        <CInput
+                            type="file"
+                            id="modal-file"
+                            name="file"
+                            placeholder="Escolha um arquivo"
+                            onChange={e => setModalFileField(e.target.files[0])}
                         />
                     </CFormGroup>
 
