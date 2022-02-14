@@ -103,6 +103,11 @@ export default () => {
             });
             let json = await req.json();
             return json;
+        },
+        removeDocument: async (id) => {
+            let token = localStorage.getItem('token');
+            let json = await request('delete', `/doc/${id}`, {}, token);
+            return json;
         }
     };
 }
