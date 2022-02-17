@@ -37,6 +37,7 @@ export default () => {
     const [modalAreaList, setModalAreaList] = useState([]);
     const [modalUnitId, setModalUnitId] = useState(0);
     const [modalAreaId, setModalAreaId] = useState(0);
+    const [modalDateField, setModalDateField] = useState('');
 
     const fields = [
         { label: 'Unidade', key: 'name_unit', sorter: false },
@@ -249,13 +250,12 @@ export default () => {
                     </CFormGroup>
 
                     <CFormGroup>
-                        <CLabel htmlFor="modal-title">Título do documento</CLabel>
+                        <CLabel htmlFor="modal-date">Data da reserva</CLabel>
                         <CInput
                             type="text"
-                            id="modal-title"
-                            placeholder="Digite um título para o documento"
-                            value={modalTitleField}
-                            onChange={e => setModalTitleField(e.target.value)}
+                            id="modal-date"
+                            value={modalDateField}
+                            onChange={e => setModalDateField(e.target.value)}
                             disabled={modalLoading}
                         />
                     </CFormGroup>
