@@ -15,7 +15,8 @@ import {
     CFormGroup,
     CLabel,
     CInput,
-    CTextarea
+    CTextarea,
+    CSelect
 
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
@@ -32,6 +33,10 @@ export default () => {
     const [modalTitleField, setModalTitleField] = useState('');
     const [modalFileField, setModalFileField] = useState('');
     const [modalId, setModalId] = useState('');
+    const [modalUnitList, setModalUnitList] = useState([]);
+    const [modalAreaList, setModalAreaList] = useState([]);
+    const [modalUnitId, setModalUnitId] = useState(0);
+    const [modalAreaId, setModalAreaId] = useState(0);
 
     const fields = [
         { label: 'Unidade', key: 'name_unit', sorter: false },
@@ -42,6 +47,8 @@ export default () => {
 
     useEffect(() => {
         getList();
+        getUnitList();
+        getAreaList();
     }, []);
 
     const getList = async () => {
@@ -52,6 +59,20 @@ export default () => {
             setList(result.list);
         } else {
             alert(result.error);
+        }
+    }
+
+    const getUnitList = async () => {
+        const result = await api.getUnits();
+        if (result.error === '') {
+            setModalUnitList(result.list);
+        }
+    }
+
+    const getAreaList = async () => {
+        const result = await api.getAreas();
+        if (result.error === '') {
+            setModalAreaList(result.list);
         }
     }
 
@@ -136,8 +157,12 @@ export default () => {
 
                     <CCard>
                         <CCardHeader>
-                            <CButton color="primary" onClick={handleNewButton} >
-                                <CIcon name="cil-check" /> Novo Documento
+                            <CButton
+                                color="primary"
+                                onClick={handleNewButton}
+                                disabled={modalUnitList.length === 0 || modalAreaList.length === 0}
+                            >
+                                <CIcon name="cil-check" /> Nova Reserva
                             </CButton>
                         </CCardHeader>
                         <CCardBody>
@@ -162,7 +187,11 @@ export default () => {
                                     'actions': (item, index) => (
                                         <td>
                                             <CButtonGroup >
-                                                <CButton color="info" onClick={() => handleEditButton(index)}>
+                                                <CButton
+                                                    color="info"
+                                                    onClick={() => handleEditButton(index)}
+                                                    disabled={modalUnitList.length === 0 || modalAreaList.length === 0}
+                                                >
                                                     Editar</CButton>
                                                 <CButton color="danger" onClick={() => handleRemoveButton(index)}>Excluir</CButton>
                                             </CButtonGroup>
@@ -178,9 +207,47 @@ export default () => {
 
             <CModal show={showModal} onClose={handleCloseModal}>
                 <CModalHeader closeButton>
-                    {modalId === '' ? 'Novo' : 'Editar'} Documento
+                    {modalId === '' ? 'Nova' : 'Editar'} Reserva
                 </CModalHeader>
                 <CModalBody>
+
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-unit" >Unidade</CLabel>
+                        <CSelect
+                            id="modal-unit"
+                            custom
+                            onChange={e => setModalUnitId(e.target.value)}
+                        >
+                            {modalUnitList.map((item, index) => (
+                                <option
+                                    key={index}
+                                    value={item.id}
+
+                                >{item.name}</option>
+                            ))}
+
+                        </CSelect>
+                    </CFormGroup>
+
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-area" >Área</CLabel>
+                        <CSelect
+                            id="modal-area"
+                            custom
+                            onChange={e => setModalAreaId(e.target.value)}
+
+                        >
+                            {modalAreaList.map((item, index) => (
+                                <option
+                                    key={index}
+                                    value={item.id}
+
+                                >{item.title}</option>
+                            ))}
+
+                        </CSelect>
+                    </CFormGroup>
+
                     <CFormGroup>
                         <CLabel htmlFor="modal-title">Título do documento</CLabel>
                         <CInput
@@ -193,16 +260,7 @@ export default () => {
                         />
                     </CFormGroup>
 
-                    <CFormGroup>
-                        <CLabel htmlFor="modal-file">Arquivo (pdf)</CLabel>
-                        <CInput
-                            type="file"
-                            id="modal-file"
-                            name="file"
-                            placeholder="Escolha um arquivo"
-                            onChange={e => setModalFileField(e.target.files[0])}
-                        />
-                    </CFormGroup>
+
 
                 </CModalBody>
                 <CModalFooter>
