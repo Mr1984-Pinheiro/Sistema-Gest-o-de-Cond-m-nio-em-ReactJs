@@ -123,6 +123,12 @@ export default () => {
             let token = localStorage.getItem('token');
             let json = await request('get', '/areas', {}, token);
             return json;
+        },
+        addReservation: async (data) => {
+
+        },
+        updateReservtion: async (id, data) => {
+
         }
     };
 }

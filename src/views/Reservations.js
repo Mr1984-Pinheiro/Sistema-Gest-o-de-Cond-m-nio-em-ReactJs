@@ -83,8 +83,9 @@ export default () => {
 
     const handleEditButton = (index) => {
         setModalId(list[index]['id']);
-        setModalTitleField(list[index]['title']);
-        //setModalBodyField(list[index]['body']);
+        setModalUnitId(list[index]['id_unit']);
+        setModalAreaId(list[index]['id_area']);
+        setModalDateField(list[index]['reservation_date']);
         setShowModal(true);
     }
 
@@ -101,38 +102,29 @@ export default () => {
 
     const handleNewButton = () => {
         setModalId('');
-        setModalTitleField('');
-        setModalFileField('');
+        setModalUnitId(modalUnitList[0]['id']);
+        setModalAreaId(modalAreaList[0]['id']);
+        setModalDateField('');
         setShowModal(true);
     }
 
     const handleModalSave = async () => {
-        if (modalTitleField) {
+        if (modalUnitId && modalAreaId && modalDateField) {
             setModalLoading(true);
 
             let result;
             let data = {
-                title: modalTitleField,
+                id_unit: modalUnitId,
+                id_area: modalAreaId,
+                reservation_date: modalDateField
 
             };
 
             if (modalId === '') {
-                if (modalFileField) {
-                    data.file = modalFileField;
-                    result = await api.addDocument(data);
-                } else {
-                    alert("Selecione o sarquivo");
-                    setModalLoading(false);
-                    return;
-                }
-
+                result = await api.addReservation(data);
             } else {
-                if (modalFileField) {
-                    data.file = modalFileField;
-                }
-                result = await api.updateDocument(modalId, data);
+                result = await api.updateReservation(modalId, data);
             }
-
             setModalLoading(false);
             if (result.error === '') {
                 setShowModal(false);
@@ -223,6 +215,7 @@ export default () => {
                                 <option
                                     key={index}
                                     value={item.id}
+                                    selected={item.id === modalUnitId}
 
                                 >{item.name}</option>
                             ))}
@@ -242,6 +235,7 @@ export default () => {
                                 <option
                                     key={index}
                                     value={item.id}
+                                    selected={item.id === modalAreaId}
 
                                 >{item.title}</option>
                             ))}
