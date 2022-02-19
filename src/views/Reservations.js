@@ -91,7 +91,7 @@ export default () => {
 
     const handleRemoveButton = async (index) => {
         if (window.confirm('Tem certeza que deseja excluir?')) {
-            const result = await api.removeDocument(list[index]['id']);
+            const result = await api.removeReservation(list[index]['id']);
             if (result.error === '') {
                 getList();
             } else {
@@ -170,7 +170,7 @@ export default () => {
                                 striped
                                 bordered
                                 pagination
-                                itemsPerPage={5}
+                                itemsPerPage={10}
                                 scopedSlots={{
                                     'reservations_date': (item) => (
                                         <td>
