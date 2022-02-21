@@ -40,10 +40,12 @@ export default () => {
     const [modalDateField, setModalDateField] = useState('');
 
     const fields = [
+        { label: 'Resolvido', key: 'status', filter: false },
         { label: 'Unidade', key: 'name_unit', sorter: false },
-        { label: 'Área', key: 'name_area', sorter: false },
-        { label: 'Data da reserva', key: 'reservation_date' },
-        { label: 'Ações', key: 'actions', _style: { width: '1px' }, sorter: false, filter: false }
+        { label: 'Titulo', key: 'title', sorter: false },
+        { label: 'Fotos', key: 'photos', sorter: false, filter: false },
+        { label: 'Data', key: 'datecreated' }
+
     ];
 
     useEffect(() => {
@@ -148,7 +150,7 @@ export default () => {
         <>
             <CRow>
                 <CCol>
-                    <h2>Reservas</h2>
+                    <h2>Ocorrências</h2>
 
                     <CCard>
                         <CCardHeader>
