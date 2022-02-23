@@ -49,6 +49,10 @@ export default () => {
 
     }
 
+    const showLightbox = (photos) => {
+
+    }
+
     return (
         <>
             <CRow>
@@ -73,7 +77,15 @@ export default () => {
                                 scopedSlots={{
                                     'photos': (item) => (
                                         <td>
-                                            tres pointinhos...
+                                            {item.photos.length > 0 &&
+                                                <CButton
+                                                    color="success"
+                                                    onClick={() => showLightbox(item.photos)}
+
+                                                >
+                                                    {item.photos.length} foto{item.photos.length !== 1 ? 's' : ''}
+                                                </CButton>
+                                            }
                                         </td>
 
                                     ),
@@ -86,7 +98,7 @@ export default () => {
                                         <td>
                                             <CSwitch
                                                 color="success"
-                                                checked={false}
+                                                checked={item.status === 'RESOLVED'}
                                                 onChange={(e) => handleSwitchClick(e, item)}
                                             />
 
