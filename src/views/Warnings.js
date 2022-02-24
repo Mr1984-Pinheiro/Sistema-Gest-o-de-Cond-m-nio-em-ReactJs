@@ -10,15 +10,19 @@ import {
 
 
 } from '@coreui/react'
-
+import Lightbox from "react-image-lightbox";
+import 'react-image-lightbox/style.css';
 
 import useApi from '../services/api'
+
 
 export default () => {
     const api = useApi();
 
     const [loading, setLoding] = useState(true);
     const [list, setList] = useState([]);
+    const [photoList, setPhotoList] = useState([]);
+    const [photoListIndex, setPhotoListIndex] = useState(0);
 
 
     const fields = [
@@ -50,7 +54,8 @@ export default () => {
     }
 
     const showLightbox = (photos) => {
-
+        setPhotoListIndex(0);
+        setPhotoList(photos);
     }
 
     return (
@@ -110,6 +115,27 @@ export default () => {
                     </CCard>
                 </CCol>
             </CRow>
+
+            {photoList.length > 0 &&
+                <Lightbox
+                    mainSrc={photoList[photoListIndex]}
+                    nextSrc={photoList[photoListIndex+1]}
+                    prevSrc={photoList[photoListIndex-1]}
+                    onCloseRequest={() => setPhotoList([])}
+                    onMovePrevRequest={() => {
+                        if (photoList[photoListIndex-1] !== undefined) {
+                            setPhotoListIndex(photoListIndex - 1);
+                        }
+                    }}
+                    onMoveNextRequest={() => {
+                        if (photoList[photoListIndex + 1] !== undefined) {
+                            setPhotoListIndex(photoListIndex + 1);
+                        }
+                    }}
+                    reactModalStyle={{ overlay: { zIndex: 9999 } }}
+                />
+
+            }
         </>
     );
 }
