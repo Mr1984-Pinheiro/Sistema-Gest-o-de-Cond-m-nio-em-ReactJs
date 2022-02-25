@@ -144,7 +144,7 @@ export default () => {
             let json = await request('get', '/warnings', {}, token);
             return json;
         },
-        updateWarnings: async (id) => {
+        updateWarning: async (id) => {
             let token = localStorage.getItem('token');
             let json = await request('put', `/warning/${id}`, {}, token);
             return json;
