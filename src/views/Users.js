@@ -30,15 +30,14 @@ export default () => {
     const [list, setList] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
-    const [modalTitleField, setModalTitleField] = useState('');
-    const [modalFileField, setModalFileField] = useState('');
-    const [modalId, setModalId] = useState('');
-    const [modalUnitList, setModalUnitList] = useState([]);
-    const [modalAreaList, setModalAreaList] = useState([]);
-    const [modalUnitId, setModalUnitId] = useState(0);
-    const [modalAreaId, setModalAreaId] = useState(0);
-    const [modalDateField, setModalDateField] = useState('');
 
+    const [modalId, setModalId] = useState('');
+    const [modalNameField, setModalNameField] = useState('');
+    const [modalEmailField, setModalEmailField] = useState('');
+    const [modalCpfField, setModalCpfField] = useState('');
+    const [modalPass1Field, setModalPass1Field] = useState('');
+    const [modalPass2Field, setModalPass2Field] = useState('');
+    
     const fields = [
         { label: 'Nome', key: 'name'},
         { label: 'E-mail', key: 'email'},
@@ -67,11 +66,12 @@ export default () => {
 
     const handleEditButton = (id) => {
         let index = list.findIndex(v => v.id === id);
-
         setModalId(list[index]['id']);
-        setModalUnitId(list[index]['id_unit']);
-        setModalAreaId(list[index]['id_area']);
-        setModalDateField(list[index]['reservation_date']);
+        setModalNameField(list[index]['iname']);
+        setModalEmailField(list[index]['email']);
+        setModalCpfField(list[index]['cpf']);
+        setModalPass1Field('');
+        setModalPass2Field('');
         setShowModal(true);
     }
 
@@ -88,28 +88,37 @@ export default () => {
 
     const handleNewButton = () => {
         setModalId('');
-        setModalUnitId(modalUnitList[0]['id']);
-        setModalAreaId(modalAreaList[0]['id']);
-        setModalDateField('');
+        setModalNameField('');
+        setModalEmailField('');
+        setModalCpfField('');
+        setModalPass1Field('');
+        setModalPass2Field('');
         setShowModal(true);
     }
 
     const handleModalSave = async () => {
-        if (modalUnitId && modalAreaId && modalDateField) {
+        if (modalNameField && modalEmailField && modalCpfField) {
             setModalLoading(true);
 
             let result;
             let data = {
-                id_unit: modalUnitId,
-                id_area: modalAreaId,
-                reservation_date: modalDateField
-
+                name: modalNameField,
+                email: modalEmailField,
+                cpf: modalCpfField
             };
+            if(modalPass1Field){
+                if(modalPass1Field === modalPass2Field) {
+                    data.password = modalPass1Field;
+                }else {
+                    alert("Senhas não batem");
+                    setModalLoading(false);
+                }
+            }
 
             if (modalId === '') {
-                result = await api.addReservation(data);
+                result = await api.addUser(data);
             } else {
-                result = await api.updateReservation(modalId, data);
+                result = await api.updateUser(modalId, data);
             }
             setModalLoading(false);
             if (result.error === '') {
@@ -123,11 +132,7 @@ export default () => {
         }
     }
 
-    const handleDownloadButton = (index) => {
-        window.open(list[index]['fileurl']);
-    }
-
-
+    
     return (
         <>
             <CRow>
@@ -139,9 +144,9 @@ export default () => {
                             <CButton
                                 color="primary"
                                 onClick={handleNewButton}
-                                disabled={modalUnitList.length === 0 || modalAreaList.length === 0}
+                                
                             >
-                                <CIcon name="cil-check" /> Nova Reserva
+                                <CIcon name="cil-check" /> Novo Usuário
                             </CButton>
                         </CCardHeader>
                         <CCardBody>
@@ -157,19 +162,13 @@ export default () => {
                                 bordered
                                 pagination
                                 itemsPerPage={10}
-                                scopedSlots={{
-                                    'reservations_date': (item) => (
-                                        <td>
-                                            {item.reservation_date_formatted}
-                                        </td>
-                                    ),
+                                scopedSlots={{                                   
                                     'actions': (item, index) => (
                                         <td>
                                             <CButtonGroup >
                                                 <CButton
                                                     color="info"
-                                                    onClick={() => handleEditButton(item.id)}
-                                                    disabled={modalUnitList.length === 0 || modalAreaList.length === 0}
+                                                    onClick={() => handleEditButton(item.id)}                                                    
                                                 >
                                                     Editar</CButton>
                                                 <CButton color="danger" onClick={() => handleRemoveButton(index)}>Excluir</CButton>
@@ -186,7 +185,7 @@ export default () => {
 
             <CModal show={showModal} onClose={handleCloseModal}>
                 <CModalHeader closeButton>
-                    {modalId === '' ? 'Nova' : 'Editar'} Reserva
+                    {modalId === '' ? 'Nova' : 'Editar'} Usuário
                 </CModalHeader>
                 <CModalBody>
 
