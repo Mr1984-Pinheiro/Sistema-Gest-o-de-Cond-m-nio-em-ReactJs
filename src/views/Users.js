@@ -187,60 +187,64 @@ export default () => {
                 <CModalHeader closeButton>
                     {modalId === '' ? 'Nova' : 'Editar'} Usuário
                 </CModalHeader>
-                <CModalBody>
+                <CModalBody>                   
 
                     <CFormGroup>
-                        <CLabel htmlFor="modal-unit" >Unidade</CLabel>
-                        <CSelect
-                            id="modal-unit"
-                            custom
-                            onChange={e => setModalUnitId(e.target.value)}
-                            value={modalUnitId}
-                        >
-                            {modalUnitList.map((item, index) => (
-                                <option
-                                    key={index}
-                                    value={item.id}
-
-
-                                >{item.name}</option>
-                            ))}
-
-                        </CSelect>
-                    </CFormGroup>
-
-                    <CFormGroup>
-                        <CLabel htmlFor="modal-area" >Área</CLabel>
-                        <CSelect
-                            id="modal-area"
-                            custom
-                            onChange={e => setModalAreaId(e.target.value)}
-                            value={modalAreaId}
-
-                        >
-                            {modalAreaList.map((item, index) => (
-                                <option
-                                    key={index}
-                                    value={item.id}
-
-                                >{item.title}</option>
-                            ))}
-
-                        </CSelect>
-                    </CFormGroup>
-
-                    <CFormGroup>
-                        <CLabel htmlFor="modal-date">Data da reserva</CLabel>
+                        <CLabel htmlFor="modal-name">Nome do usuário</CLabel>
                         <CInput
                             type="text"
-                            id="modal-date"
-                            value={modalDateField}
-                            onChange={e => setModalDateField(e.target.value)}
+                            id="modal-name"
+                            value={modalNameField}
+                            onChange={e => setModalNameField(e.target.value)}
                             disabled={modalLoading}
                         />
                     </CFormGroup>
 
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-name">E-mail do usuário</CLabel>
+                        <CInput
+                            type="email"
+                            id="modal-email"
+                            value={modalEmailField}
+                            onChange={e => setModalEmailField(e.target.value)}
+                            disabled={modalLoading}
+                        />
+                    </CFormGroup>
 
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-name">CPF do usuário</CLabel>
+                        <CInput
+                            type="text"
+                            id="modal-cpf"
+                            value={modalCpfField}
+                            onChange={e => setModalCpfField(e.target.value)}
+                            disabled={modalLoading}
+                        />
+                    </CFormGroup>
+
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-pass1">Nova Senha</CLabel>
+                        <CInput
+                            type="password"
+                            id="modal-pass1"
+                            placeholder="Digite uma nova senha para o usuário"
+                            value={modalPass1Field}
+                            onChange={e => setModalPass1Field(e.target.value)}
+                            disabled={modalLoading}
+                        />
+                    </CFormGroup>
+
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-pass2">Nova Senha (Confirmação)</CLabel>
+                        <CInput
+                            type="password"
+                            id="modal-pass2"
+                            placeholder="Confirme a nova senha para o usuário"
+                            value={modalPass2Field}
+                            onChange={e => setModalPass2Field(e.target.value)}
+                            disabled={modalLoading}
+                        />
+                    </CFormGroup>
 
                 </CModalBody>
                 <CModalFooter>
