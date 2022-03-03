@@ -77,7 +77,7 @@ export default () => {
 
     const handleRemoveButton = async (index) => {
         if (window.confirm('Tem certeza que deseja excluir?')) {
-            const result = await api.removeReservation(list[index]['id']);
+            const result = await api.removeUser(list[index]['id']);
             if (result.error === '') {
                 getList();
             } else {
