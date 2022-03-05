@@ -56,7 +56,7 @@ const Login = () => {
                 <CCardBody>
                   <CForm>
                     <h1>Login</h1>
-                    <p className="text-muted">Digite seus dados de acesso</p>
+                    <p className="text-muted">Áreas Comuns</p>
 
                     {error !== '' &&
                       <CAlert color='danger' >{error}</CAlert>
