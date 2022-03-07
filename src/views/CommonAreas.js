@@ -16,7 +16,8 @@ import {
     CLabel,
     CInput,
     CTextarea,
-    CSelect
+    CSelect,
+    CSwitch
 
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
@@ -40,42 +41,29 @@ export default () => {
     const [modalDateField, setModalDateField] = useState('');
 
     const fields = [
-        { label: 'Unidade', key: 'name_unit', sorter: false },
-        { label: 'Área', key: 'name_area', sorter: false },
-        { label: 'Data da reserva', key: 'reservation_date' },
+        { label: 'Permitida', key: 'allowed', sorter: false },
+        { label: 'Capa', key: 'cover', sorter: false },
+        { label: 'Título', key: 'title' },
+        { label: 'Dias de funcionamento', key: 'days' },
+        { label: 'Horário de início', key: 'start_time' },
+        { label: 'Horário de fim', key: 'end_time' },
         { label: 'Ações', key: 'actions', _style: { width: '1px' }, sorter: false, filter: false }
     ];
 
     useEffect(() => {
-        getList();
-        getUnitList();
-        getAreaList();
+        getList();        
     }, []);
 
     const getList = async () => {
         setLoding();
-        const result = await api.getReservations();
+        const result = await api.getAreas();
         setLoding(false);
         if (result.error === '') {
             setList(result.list);
         } else {
             alert(result.error);
         }
-    }
-
-    const getUnitList = async () => {
-        const result = await api.getUnits();
-        if (result.error === '') {
-            setModalUnitList(result.list);
-        }
-    }
-
-    const getAreaList = async () => {
-        const result = await api.getAreas();
-        if (result.error === '') {
-            setModalAreaList(result.list);
-        }
-    }
+    }   
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -174,11 +162,16 @@ export default () => {
                                 pagination
                                 itemsPerPage={10}
                                 scopedSlots={{
-                                    'reservations_date': (item) => (
+                                    'allowed': (item) => {
                                         <td>
-                                            {item.reservation_date_formatted}
+                                            <CSwitch 
+                                                color="success"
+                                                checked={item.allowed}
+                                                onChange={()=>handleSwitchClick(item)}
+                                            />
                                         </td>
-                                    ),
+                                    },  
+                                    
                                     'actions': (item) => (
                                         <td>
                                             <CButtonGroup >
