@@ -15,7 +15,6 @@ import {
     CFormGroup,
     CLabel,
     CInput,
-    CTextarea,
     CSelect,
     CSwitch
 
@@ -41,7 +40,7 @@ export default () => {
     const [modalDateField, setModalDateField] = useState('');
 
     const fields = [
-        { label: 'Permitida', key: 'allowed', sorter: false },
+        { label: 'Ativo', key: 'allowed', sorter: false },
         { label: 'Capa', key: 'cover', sorter: false },
         { label: 'Título', key: 'title' },
         { label: 'Dias de funcionamento', key: 'days' },
@@ -127,10 +126,9 @@ export default () => {
         }
     }
 
-    const handleDownloadButton = (index) => {
-        window.open(list[index]['fileurl']);
-    }
+    const handleSwitchClick = () => {
 
+    }
 
     return (
         <>
@@ -162,7 +160,7 @@ export default () => {
                                 pagination
                                 itemsPerPage={10}
                                 scopedSlots={{
-                                    'allowed': (item) => {
+                                    'allowed': (item) => (
                                         <td>
                                             <CSwitch 
                                                 color="success"
@@ -170,8 +168,29 @@ export default () => {
                                                 onChange={()=>handleSwitchClick(item)}
                                             />
                                         </td>
-                                    },  
-                                    
+    ),  
+                                    'cover' : (item) => (
+                                        <td>
+                                            <img src={item.cover}width={100}/>
+                                        </td>
+                                    ),
+                                    'days' : (item) => {
+                                        let dayWords = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo' ];
+                                        let days = item.days.split(',');
+                                        let dayString = [];
+                                        for(let i in days ){
+                                            if(days[i] && dayWords[days[i]]) {
+                                                dayString.push( dayWords[days[i]]);
+                                            }
+                                        }
+
+
+                                        return (
+                                            <td>
+                                                {dayString.join(', ')}
+                                            </td>
+                                        );
+                                    },
                                     'actions': (item) => (
                                         <td>
                                             <CButtonGroup >
