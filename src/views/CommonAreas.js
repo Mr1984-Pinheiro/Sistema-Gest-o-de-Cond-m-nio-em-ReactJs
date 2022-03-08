@@ -30,9 +30,26 @@ export default () => {
     const [list, setList] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
-    const [modalTitleField, setModalTitleField] = useState('');
-    const [modalFileField, setModalFileField] = useState('');
     const [modalId, setModalId] = useState('');
+
+    const [modalAllowedField, setModalAllowedField] = useState(1);
+    const [modalTitleField, setModalTitleField] = useState('');
+    const [ modalCoverField, setModalCoverField] = useState(''); 
+    const [modalDaysField, setModalDaysField] = useState([]);
+    const [modalStartTimeField, setModalStartTimeField] = useState('');
+    const [modalEndTimeField, setModalEndTimeField] = useState('');
+
+
+
+
+
+
+
+
+
+
+    
+    const [modalFileField, setModalFileField] = useState('');   
     const [modalUnitList, setModalUnitList] = useState([]);
     const [modalAreaList, setModalAreaList] = useState([]);
     const [modalUnitId, setModalUnitId] = useState(0);
@@ -91,9 +108,12 @@ export default () => {
 
     const handleNewButton = () => {
         setModalId('');
-        setModalUnitId(modalUnitList[0]['id']);
-        setModalAreaId(modalAreaList[0]['id']);
-        setModalDateField('');
+       setModalAllowedField(1);
+       setModalTitleField('');
+       setModalCoverField('');
+       setModalDaysField([]);
+       setModalStartTimeField('');
+       setModalEndTimeField('');
         setShowModal(true);
     }
 
@@ -130,6 +150,10 @@ export default () => {
 
     }
 
+    const handleModalSwitchClick = () =>{
+        setModalAllowedField(1 - modalAllowedField);
+    }
+
     return (
         <>
             <CRow>
@@ -140,10 +164,9 @@ export default () => {
                         <CCardHeader>
                             <CButton
                                 color="primary"
-                                onClick={handleNewButton}
-                                disabled={modalUnitList.length === 0 || modalAreaList.length === 0}
+                                onClick={handleNewButton}                                
                             >
-                                <CIcon name="cil-check" /> Nova Reserva
+                                <CIcon name="cil-check" /> Nova Área Comum
                             </CButton>
                         </CCardHeader>
                         <CCardBody>
@@ -194,12 +217,7 @@ export default () => {
                                     'actions': (item) => (
                                         <td>
                                             <CButtonGroup >
-                                                <CButton
-                                                    color="info"
-                                                    onClick={() => handleEditButton(item.id)}
-                                                    disabled={modalUnitList.length === 0 || modalAreaList.length === 0}
-                                                >
-                                                    Editar</CButton>
+                                                <CButton color="info" onClick={() => handleEditButton(item.id)}>Editar</CButton>
                                                 <CButton color="danger" onClick={() => handleRemoveButton(item.id)}>Excluir</CButton>
                                             </CButtonGroup>
 
@@ -214,62 +232,56 @@ export default () => {
 
             <CModal show={showModal} onClose={handleCloseModal}>
                 <CModalHeader closeButton>
-                    {modalId === '' ? 'Nova' : 'Editar'} Reserva
+                    {modalId === '' ? 'Nova' : 'Editar'} Área Comum
                 </CModalHeader>
                 <CModalBody>
 
                     <CFormGroup>
-                        <CLabel htmlFor="modal-unit" >Unidade</CLabel>
-                        <CSelect
-                            id="modal-unit"
-                            custom
-                            onChange={e => setModalUnitId(e.target.value)}
-                            value={modalUnitId}
-                        >
-                            {modalUnitList.map((item, index) => (
-                                <option
-                                    key={index}
-                                    value={item.id}
-
-
-                                >{item.name}</option>
-                            ))}
-
-                        </CSelect>
-                    </CFormGroup>
-
-                    <CFormGroup>
-                        <CLabel htmlFor="modal-area" >Área</CLabel>
-                        <CSelect
-                            id="modal-area"
-                            custom
-                            onChange={e => setModalAreaId(e.target.value)}
-                            value={modalAreaId}
-
-                        >
-                            {modalAreaList.map((item, index) => (
-                                <option
-                                    key={index}
-                                    value={item.id}
-
-                                >{item.title}</option>
-                            ))}
-
-                        </CSelect>
-                    </CFormGroup>
-
-                    <CFormGroup>
-                        <CLabel htmlFor="modal-date">Data da reserva</CLabel>
-                        <CInput
-                            type="text"
-                            id="modal-date"
-                            value={modalDateField}
-                            onChange={e => setModalDateField(e.target.value)}
-                            disabled={modalLoading}
+                        <CLabel htmlFor="modal-allowed" >Ativo</CLabel>
+                        <CSwitch 
+                            color="success"
+                            checked={modalAllowedField}
+                            onChange={handleModalSwitchClick}
                         />
                     </CFormGroup>
 
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-cover">Capa</CLabel>
+                        <CInput 
+                            type="file"
+                            id="modal-cover"
+                            name="cover"
+                            placeholder="Escolha uma imagem"
+                            onChange={(e)=>setModalCoverField(e.target.files[0])}
+                        />
+                    </CFormGroup>
+                    
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-days">Dias de funcionamento</CLabel>
+                        
+                    </CFormGroup>  
 
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-start-time">Horário de início</CLabel>
+                        <CInput 
+                            type="time"
+                            id="modal-start-time"
+                            name="start_time"
+                            value={modalStartTimeField}                            
+                            onChange={(e)=>setModalStartTimeField(e.target.value)}
+                        />
+                    </CFormGroup> 
+
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-end-time">Horário de Fim</CLabel>
+                        <CInput 
+                            type="time"
+                            id="modal-end-time"
+                            name="end_time"
+                            value={modalEndTimeField}                            
+                            onChange={(e)=>setModalEndTimeField(e.target.value)}
+                        />
+                    </CFormGroup>       
 
                 </CModalBody>
                 <CModalFooter>
