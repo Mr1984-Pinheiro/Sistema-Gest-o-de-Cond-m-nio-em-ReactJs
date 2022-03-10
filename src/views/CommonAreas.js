@@ -88,11 +88,13 @@ export default () => {
 
     const handleEditButton = (id) => {
         let index = list.findIndex(v => v.id === id);
-
         setModalId(list[index]['id']);
-        setModalUnitId(list[index]['id_unit']);
-        setModalAreaId(list[index]['id_area']);
-        setModalDateField(list[index]['reservation_date']);
+        setModalAllowedField(list[index]['allowed']);
+        setModalTitleField(list[index]['title']);        
+        setModalCoverField('');
+        setModalDaysField(list[index]['days'].split(','));
+        setModalStartTimeField(list[index]['start_time']);
+        setModalEndTimeField(list[index]['end_time']);        
         setShowModal(true);
     }
 
@@ -119,21 +121,27 @@ export default () => {
     }
 
     const handleModalSave = async () => {
-        if (modalUnitId && modalAreaId && modalDateField) {
+        if (modalTitleField && modalStartTimeField && modalEndTimeField) {
             setModalLoading(true);
 
             let result;
             let data = {
-                id_unit: modalUnitId,
-                id_area: modalAreaId,
-                reservation_date: modalDateField
+               allowed: modalAllowedField,
+               title: modalTitleField,
+               days: modalDaysField.join(','),
+               start_time: modalStartTimeField,
+               end_time: modalEndTimeField
 
             };
+            if(modalCoverField) {
+                data.cover = modalCoverField;
+            }
+
 
             if (modalId === '') {
-                result = await api.addReservation(data);
+                result = await api.addArea(data);
             } else {
-                result = await api.updateReservation(modalId, data);
+                result = await api.updateArea(modalId, data);
             }
             setModalLoading(false);
             if (result.error === '') {
@@ -256,6 +264,17 @@ export default () => {
                             color="success"
                             checked={modalAllowedField}
                             onChange={handleModalSwitchClick}
+                        />
+                    </CFormGroup>
+
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-title">Título</CLabel>
+                        <CInput 
+                            type="text"
+                            id="modal-title"
+                            name="title"  
+                            value={modalTitleField}                          
+                            onChange={(e)=>setModalTitleField(e.target.value)}
                         />
                     </CFormGroup>
 
