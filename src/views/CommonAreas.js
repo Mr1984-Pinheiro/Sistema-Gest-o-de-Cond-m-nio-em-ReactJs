@@ -15,7 +15,6 @@ import {
     CFormGroup,
     CLabel,
     CInput,
-    CSelect,
     CSwitch,
     CInputCheckbox
 
@@ -40,30 +39,13 @@ export default () => {
     const [modalStartTimeField, setModalStartTimeField] = useState('');
     const [modalEndTimeField, setModalEndTimeField] = useState('');
 
-
-
-
-
-
-
-
-
-
-    
-    const [modalFileField, setModalFileField] = useState('');   
-    const [modalUnitList, setModalUnitList] = useState([]);
-    const [modalAreaList, setModalAreaList] = useState([]);
-    const [modalUnitId, setModalUnitId] = useState(0);
-    const [modalAreaId, setModalAreaId] = useState(0);
-    const [modalDateField, setModalDateField] = useState('');
-
     const fields = [
-        { label: 'Ativo', key: 'allowed', sorter: false },
-        { label: 'Capa', key: 'cover', sorter: false },
+        { label: 'Ativo', key: 'allowed', filter: false, sorter: false },
+        { label: 'Capa', key: 'cover', filter: false, sorter: false },
         { label: 'Título', key: 'title' },
         { label: 'Dias de funcionamento', key: 'days' },
-        { label: 'Horário de início', key: 'start_time' },
-        { label: 'Horário de fim', key: 'end_time' },
+        { label: 'Horário de início', key: 'start_time', filter: false },
+        { label: 'Horário de fim', key: 'end_time', filter: false },
         { label: 'Ações', key: 'actions', _style: { width: '1px' }, sorter: false, filter: false }
     ];
 
@@ -100,7 +82,7 @@ export default () => {
 
     const handleRemoveButton = async (id) => {
         if (window.confirm('Tem certeza que deseja excluir?')) {
-            const result = await api.removeReservation(id);
+            const result = await api.removeArea(id);
             if (result.error === '') {
                 getList();
             } else {
@@ -110,7 +92,7 @@ export default () => {
     }
 
     const handleNewButton = () => {
-        setModalId('');
+       setModalId('');
        setModalAllowedField(1);
        setModalTitleField('');
        setModalCoverField('');
@@ -155,8 +137,15 @@ export default () => {
         }
     }
 
-    const handleSwitchClick = () => {
-
+    const handleSwitchClick = async (item) => {
+        setLoding(true);
+        const result = await api.updateAreaAllowed(item.id);
+        setLoding(false);
+        if(result.error === '') {
+            getList();
+        }else {
+            alert(result.error);
+        }
     }
 
     const handleModalSwitchClick = () =>{
