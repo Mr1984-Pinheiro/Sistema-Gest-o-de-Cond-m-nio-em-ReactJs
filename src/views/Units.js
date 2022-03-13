@@ -23,6 +23,8 @@ import CIcon from '@coreui/icons-react'
 
 import useApi from '../services/api'
 
+let timer;
+
 export default () => {
     const api = useApi();
 
@@ -30,9 +32,16 @@ export default () => {
     const [list, setList] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [modalLoading, setModalLoading] = useState(false);
-    const [modalTitleField, setModalTitleField] = useState('');
-    const [modalFileField, setModalFileField] = useState('');
     const [modalId, setModalId] = useState('');
+
+    const [modalNameField, setModalNameField] = useState('');
+    const [modalOwnerSearchField, setModalOwnerSearchField] = useState('');
+    const [modalOwnerList, setModalOwnerList] = useState([]); 
+    const [modalOwnerField, setModalOwnerField] = useState(null);
+
+    
+    const [modalTitleField, setModalTitleField] = useState('');
+    const [modalFileField, setModalFileField] = useState('');    
     const [modalUnitList, setModalUnitList] = useState([]);
     const [modalAreaList, setModalAreaList] = useState([]);
     const [modalUnitId, setModalUnitId] = useState(0);
@@ -48,6 +57,17 @@ export default () => {
     useEffect(() => {
         getList();       
     }, []);
+
+    useEffect(() => {
+        if(modalOwnerSearchField !== '') {
+            clearTimeout(timer);
+            timer = setTimeout(searchUser, 1500);
+        }
+    }, [modalOwnerSearchField]);
+
+    const searchUser = async () => {
+        
+    }
 
     const getList = async () => {
         setLoding();
@@ -87,9 +107,7 @@ export default () => {
 
     const handleNewButton = () => {
         setModalId('');
-        setModalUnitId(modalUnitList[0]['id']);
-        setModalAreaId(modalAreaList[0]['id']);
-        setModalDateField('');
+        
         setShowModal(true);
     }
 
@@ -185,56 +203,25 @@ export default () => {
                 <CModalHeader closeButton>
                     {modalId === '' ? 'Nova' : 'Editar'} Reserva
                 </CModalHeader>
-                <CModalBody>
+                <CModalBody>                    
 
                     <CFormGroup>
-                        <CLabel htmlFor="modal-unit" >Unidade</CLabel>
-                        <CSelect
-                            id="modal-unit"
-                            custom
-                            onChange={e => setModalUnitId(e.target.value)}
-                            value={modalUnitId}
-                        >
-                            {modalUnitList.map((item, index) => (
-                                <option
-                                    key={index}
-                                    value={item.id}
-
-
-                                >{item.name}</option>
-                            ))}
-
-                        </CSelect>
-                    </CFormGroup>
-
-                    <CFormGroup>
-                        <CLabel htmlFor="modal-area" >Área</CLabel>
-                        <CSelect
-                            id="modal-area"
-                            custom
-                            onChange={e => setModalAreaId(e.target.value)}
-                            value={modalAreaId}
-
-                        >
-                            {modalAreaList.map((item, index) => (
-                                <option
-                                    key={index}
-                                    value={item.id}
-
-                                >{item.title}</option>
-                            ))}
-
-                        </CSelect>
-                    </CFormGroup>
-
-                    <CFormGroup>
-                        <CLabel htmlFor="modal-date">Data da reserva</CLabel>
+                        <CLabel htmlFor="modal-date">Nome da unidade</CLabel>
                         <CInput
                             type="text"
-                            id="modal-date"
-                            value={modalDateField}
-                            onChange={e => setModalDateField(e.target.value)}
-                            disabled={modalLoading}
+                            id="modal-name"
+                            value={modalNameField}
+                            onChange={e => setModalNameField(e.target.value)}                            
+                        />
+                    </CFormGroup>
+
+                    <CFormGroup>
+                        <CLabel htmlFor="modal-date">Proprietário (nome, cpf ou e-mail)</CLabel>
+                        <CInput
+                            type="text"
+                            id="modal-owner"
+                            value={modalOwnerSearchField}
+                            onChange={e => setModalOwnerSearchField(e.target.value)}                            
                         />
                     </CFormGroup>
 
