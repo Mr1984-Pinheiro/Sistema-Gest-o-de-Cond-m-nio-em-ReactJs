@@ -66,7 +66,14 @@ export default () => {
     }, [modalOwnerSearchField]);
 
     const searchUser = async () => {
-        
+        if(modalOwnerSearchField !== ''){
+            const result = await api.searchUser(modalOwnerSearchField);
+            if(result.error === ''){
+                setModalOwnerList(result.list);
+            }else {
+                alert(result.error);
+            }
+        }
     }
 
     const getList = async () => {
@@ -140,10 +147,11 @@ export default () => {
         }
     }
 
-    const handleDownloadButton = (index) => {
-        window.open(list[index]['fileurl']);
+    const selectModalOwnerField = (item) => {
+        setModalOwnerField(item);
+        setModalOwnerList([]);
+        setModalOwnerSearchField('');
     }
-
 
     return (
         <>
@@ -223,6 +231,18 @@ export default () => {
                             value={modalOwnerSearchField}
                             onChange={e => setModalOwnerSearchField(e.target.value)}                            
                         />
+                        {modalOwnerList.length > 0 && 
+                            <CSelect
+                                sizeHtml={5}
+                                onChange={e=>selectModalOwnerField(e.target.value)}
+                            >
+                                {modalOwnerList.map((item, index)=>(
+                                    <option key={index} value={item.id}>{item.name}</option>
+                                ))}
+
+                            </CSelect>
+                        
+                        }
                     </CFormGroup>
 
 
