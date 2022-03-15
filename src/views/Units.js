@@ -147,7 +147,8 @@ export default () => {
         }
     }
 
-    const selectModalOwnerField = (item) => {
+    const selectModalOwnerField = (id) => {
+        let item = modalOwnerList.find(item => item.id == id);
         setModalOwnerField(item);
         setModalOwnerList([]);
         setModalOwnerSearchField('');
@@ -225,24 +226,43 @@ export default () => {
 
                     <CFormGroup>
                         <CLabel htmlFor="modal-date">Proprietário (nome, cpf ou e-mail)</CLabel>
-                        <CInput
-                            type="text"
-                            id="modal-owner"
-                            value={modalOwnerSearchField}
-                            onChange={e => setModalOwnerSearchField(e.target.value)}                            
-                        />
-                        {modalOwnerList.length > 0 && 
-                            <CSelect
-                                sizeHtml={5}
-                                onChange={e=>selectModalOwnerField(e.target.value)}
-                            >
-                                {modalOwnerList.map((item, index)=>(
-                                    <option key={index} value={item.id}>{item.name}</option>
-                                ))}
+                        {modalOwnerField === null && 
+                            <>
+                                 <CInput
+                                type="text"
+                                id="modal-owner"
+                                value={modalOwnerSearchField}
+                                onChange={e => setModalOwnerSearchField(e.target.value)}                            
+                            />
+                            {modalOwnerList.length > 0 && 
+                                <CSelect
+                                    sizeHtml={5}
+                                    onChange={e=>selectModalOwnerField(e.target.value)}
+                                >
+                                    {modalOwnerList.map((item, index)=>(
+                                        <option key={index} value={item.id}>{item.name}</option>
+                                    ))}
 
-                            </CSelect>
-                        
+                            </CSelect>                        
                         }
+                            </>
+                        }
+
+                       
+
+                        {modalOwnerField !== null && 
+                            <>
+                                <br/>
+                                <CButton 
+                                    size="sm" 
+                                    color="danger"
+                                    onClick={()=>setModalOwnerField(null)}
+                                >X</CButton>
+                                {modalOwnerField.name}
+                            </>
+                        }
+
+
                     </CFormGroup>
 
 
