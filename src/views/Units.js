@@ -93,11 +93,18 @@ export default () => {
 
     const handleEditButton = (id) => {
         let index = list.findIndex(v => v.id === id);
-
         setModalId(list[index]['id']);
-        setModalUnitId(list[index]['id_unit']);
-        setModalAreaId(list[index]['id_area']);
-        setModalDateField(list[index]['reservation_date']);
+        setModalNameField(list[index]['name']);
+        setModalOwnerList([]);
+        setModalOwnerSearchField('');
+        if(list[index]['name_owner']){
+            setModalOwnerField({
+                name: list[index]['name_owner'],
+                id: list[index]['id_owner']
+            });
+        }else {
+            setModalOwnerField(null);
+        }
         setShowModal(true);
     }
 
@@ -114,26 +121,27 @@ export default () => {
 
     const handleNewButton = () => {
         setModalId('');
-        
+        setModalNameField('');
+        setModalOwnerField(null);
+        setModalOwnerList([]);
+        setModalOwnerSearchField('');  
         setShowModal(true);
     }
 
     const handleModalSave = async () => {
-        if (modalUnitId && modalAreaId && modalDateField) {
+        if (modalNameField) {
             setModalLoading(true);
 
             let result;
             let data = {
-                id_unit: modalUnitId,
-                id_area: modalAreaId,
-                reservation_date: modalDateField
-
+                name: modalNameField,
+                id_owner: modalOwnerField.id
             };
 
             if (modalId === '') {
-                result = await api.addReservation(data);
+                result = await api.addUnit(data);
             } else {
-                result = await api.updateReservation(modalId, data);
+                result = await api.updateUnit(modalId, data);
             }
             setModalLoading(false);
             if (result.error === '') {
@@ -210,7 +218,7 @@ export default () => {
 
             <CModal show={showModal} onClose={handleCloseModal}>
                 <CModalHeader closeButton>
-                    {modalId === '' ? 'Nova' : 'Editar'} Reserva
+                    {modalId === '' ? 'Nova' : 'Editar'} Unidade
                 </CModalHeader>
                 <CModalBody>                    
 
