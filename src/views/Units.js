@@ -110,7 +110,7 @@ export default () => {
 
     const handleRemoveButton = async (id) => {
         if (window.confirm('Tem certeza que deseja excluir?')) {
-            const result = await api.removeReservation(id);
+            const result = await api.removeUnit(id);
             if (result.error === '') {
                 getList();
             } else {
@@ -199,6 +199,7 @@ export default () => {
                                     'actions': (item) => (
                                         <td>
                                             <CButtonGroup >
+                                            <CButton color="success" onClick={null}>Detalhes</CButton>
                                                 <CButton
                                                     color="info"
                                                     onClick={() => handleEditButton(item.id)}                                                   
